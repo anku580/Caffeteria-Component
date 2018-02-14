@@ -1,0 +1,102 @@
+<div class="container"
+fxLayout="row"
+fxLayout.sm="column"
+fxLayout.xs="column"
+fxLayoutAlign.gt-md="space-around center"
+fxLayoutGap="10px" 
+fxLayoutGap.xs="0">
+
+<div fxFlex="40" *ngIf="dish" [@visibility]="visibility">
+
+  <div fxFlex >
+    <md-card>
+      <md-card-header>
+        <md-card-title>
+          <h3>{{ dish.name | uppercase }}</h3>
+        </md-card-title>
+      </md-card-header>
+      <img md-card-image src="{{BaseURL + dish.image}}" alt="{{dish.name}}" >
+      <md-card-content>
+        <p>{{dish.description}}</p>
+      </md-card-content>
+      <md-card-actions>
+        <button md-button [routerLink]="['/dishdetail',prev]"> <span class="fa fa-chevron-left fa-lg"></span>
+        </button>
+        <button md-button (click)="goBack()">BACK</button>
+        <button md-button>LIKE</button>
+        <button md-button>SHARE</button>
+        <span class="flex-spacer"></span>
+        <button md-button [routerLink]="['/dishdetail',next]"> <span class="fa fa-chevron-right fa-lg"></span>
+        </button>
+      </md-card-actions>
+    </md-card>
+
+  </div>
+</div>
+
+<div fxFlex="40" *ngIf="dish" [@visibility]="visibility" [@expand]>
+  <div fxLayout="row">
+    <md-list fxFlex>
+      <h2 md-line>
+         Comments
+      </h2>
+      <md-list-item *ngFor="let c of dish.comments">
+        <p md-line>
+          <span>{{c.comment}}</span>
+        </p>
+        <p md-line>
+          <span>{{c.rating}} Stars</span>
+        </p>
+        <p md-line>
+          <span>-- {{c.author}}</span>
+          <span> {{c.date | date}}</span>
+        </p>
+      </md-list-item>
+      <div [hidden]="commentForm.invalid">
+      <md-list-item >
+        <p md-line>
+          <span>{{commentForm.value.author}}</span>
+        </p>
+        <p md-line>
+          <span>{{commentForm.value.rating}} Stars</span>
+        </p>
+        <p md-line>
+          <span>-- {{commentForm.value.comment}}</span>
+        </p>
+      </md-list-item>
+    </div>
+    </md-list>
+  </div>
+  <div fxLayout="row" class="form-size">
+    <form fxFlex novalidate [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+      <p>
+        <md-input-container class="full-width" dividerColor="{{formErrors.author ? 'warn': 'primary'}}">
+          <input mdInput formControlName="author" placeholder="Name" type="text" required>
+        </md-input-container>
+        <md-hint>
+          <span [hidden]="!(formErrors.author)">{{formErrors.author}}</span>
+        </md-hint>
+      </p>
+      <p>
+        <md-slider thumbLabel formControlName="rating" tickInterval="1" min="1" max="5" step="1.0" value="5"></md-slider>        
+      </p>
+      <p>
+        <md-input-container class="full-width" dividerColor="{{formErrors.comment ? 'warn': 'primary'}}">
+          <textarea mdInput formControlName="comment" placeholder="Your Comments" rows=12 required></textarea>
+        </md-input-container>
+        <md-hint>
+          <span [hidden]="!(formErrors.comment)">{{formErrors.comment}}</span>
+        </md-hint>
+      </p>
+      <button type="submit" md-button class="background-primary text-floral-white" [disabled]="commentForm.invalid">Submit</button>
+    </form>
+  </div>
+</div>
+<div [hidden]="dish || errMess">
+  <md-spinner></md-spinner><h4>Loading . . . Please Wait</h4>
+</div>
+<div *ngIf="errMess">
+  <h2>Error</h2>
+  <h4>{{errMess}}</h4>
+</div>
+</div>
